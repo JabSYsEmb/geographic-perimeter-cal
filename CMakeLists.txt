@@ -12,7 +12,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
-# add third-party libraries
-# target_include_directories(semm_project PRIVATE lib/simdjson/)
+# subdirectiories of the project
 add_subdirectory(lib/nlohmann)
 add_subdirectory(src)
