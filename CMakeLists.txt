@@ -1,20 +1,18 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(periculc)
+project(PerimeterCalculator)
 
 # set errors flag
 add_compile_options(-Wall -Werror -Wextra)
-add_executable(semm_project main.cpp)
 
 
-# set C++14 version of C++ 
-set(CMAKE_CXX_STANDARD 17)
+# set C++11 version of C++ 
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
-find_package(nlohmann_json 3.2.0 REQUIRED)
-
 # add third-party libraries
-target_include_directories(semm_project PRIVATE lib/simdjson/)
-target_link_libraries(semm_project PRIVATE nlohmann_json::nlohmann_json)
+# target_include_directories(semm_project PRIVATE lib/simdjson/)
+add_subdirectory(lib/nlohmann)
+add_subdirectory(src)
