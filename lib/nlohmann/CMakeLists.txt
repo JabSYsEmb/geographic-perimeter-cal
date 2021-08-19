@@ -1,4 +1,4 @@
-project (nlohmann_json)
+project (nlohmann)
 
 add_library(nlohmann INTERFACE)
 
