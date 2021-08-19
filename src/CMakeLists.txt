@@ -1,8 +1,10 @@
 project(business_logic) 
-add_executable(bss main.cpp)
 
+add_library(logic INTERFACE)
+
+target_include_directories(logic INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 # link libraries
-target_link_libraries(bss PRIVATE nlohmann)
+# target_link_libraries(logic PRIVATE nlohmann)
 
 # add the data to the file
 # set (RESOURCE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/data/sample_of_capitals.json)
