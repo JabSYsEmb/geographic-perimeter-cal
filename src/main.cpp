@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -15,25 +16,26 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-		int c{0};
-		char cflag[4] = "All";
-		char tflag[7] = "border";
+		int c;
+		char *cflag; //strcmp(cflag,"All");
+		char *tflag; //strcmp(tflag,"border");
 
-		while((c = getopt (argc, argv, "c::t::") != EOF))
+		while((c = getopt(argc, argv, "c:t:")) != EOF)
 		{
 			switch (c) 
 			{
 				case 'c':
-					cflag = optarg;
+					if(optarg) cflag = optarg;
 					break;
 				case 't':
-					tflag = optarg;
+					if(optarg) tflag = optarg;
 					break;
-				case default:
-					std::cout << optarg << " isn't a known parameter" << std::endl;
-					break;	
+				default:
+					break;
 			}
 		}
+
+		std::cout << cflag << " " << tflag << std::endl;
 		std::string absolutePath = "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/";
 		std::string suffix = "capitals.geojson";
 		try
