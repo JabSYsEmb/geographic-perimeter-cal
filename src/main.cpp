@@ -19,6 +19,8 @@ int main(int argc, char** argv)
 		int c;
 		char *cflag; //strcmp(cflag,"All");
 		char *tflag; //strcmp(tflag,"border");
+		cflag = (char*) "All";
+		tflag = (char*) "border";
 
 		while((c = getopt(argc, argv, "c:t:")) != EOF)
 		{
