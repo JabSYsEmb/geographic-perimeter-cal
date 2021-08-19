@@ -7,7 +7,6 @@
 
 using nlohmann::json;
 
-
 namespace parser
 {
 	struct parsedArguments 
@@ -17,44 +16,11 @@ namespace parser
 	};
 	typedef struct parsedArguments parsedArguments;
 	
-	void usage(void)
-	{
-		std::cout << "Usage: bss [options] ..." 
-			  << "\nOptions:\n" 
-			  << "-c\t\tcountry of interest. Default: All\n"
-			  << "-t\t\ttype of calculation. Default: border\n"
-			  << "\nExamples:\n\t\t"
-			  << "bss -c AEZ -t border\n"
-			  << "\t\tbss -c KSA -t center\n"
-			  << std::endl;
-	}
+	void usage(void);
+	void json_reader(const parsedArguments& country_info);
+	parsedArguments arguments(const int& argc, char** arguments);
 
-	
-	void json_reader()
-	{
-		std::string absolutePath = "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/";
-		std::string suffix = "capitals.geojson";
-		try
-		{
-			std::ifstream capitals_json(absolutePath+suffix);
-			json capitals_info;
-			capitals_json >> capitals_info;
-
-			for (auto& [key, value] : capitals_info.items()) 
-			if (key == "features")
-			{
-				std::cout << key <<  " : " << value[2]["geometry"].dump(4) << '\n' << std::endl;
-			}
-			capitals_info = NULL;
-			capitals_json.close();
-		}
-		catch(json::parse_error& ex)
-		{
-			std::cerr << "Parser error at byte [" << ex.byte << "]" << std::endl;
-		}
-	}
-
-	parsedArguments arguments(int argc, char** arguments)
+	parsedArguments arguments(const int& argc, char** arguments)
 	{
 		std::string cflag{"All"};
 		std::string tflag{"border"};
@@ -66,7 +32,6 @@ namespace parser
 		else
 		{
 			int c{0};
-
 			while ((c = getopt(argc, arguments, "c:t:help")) != EOF)
 			{
 				switch (c) 
@@ -94,4 +59,44 @@ namespace parser
 		}
 		return parsedArguments{cflag,tflag};
 	}
+
+	void json_reader(const parsedArguments& country_info)
+	{
+		std::string absolutePath = "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/";
+		std::string suffix = "capitals.geojson";
+		std::cout << "-c : \t\t" << country_info.countery_iso 
+			  << "\n-t : \t\t" << country_info.calculateMode 
+			  << std::endl;
+		try
+		{
+			std::ifstream capitals_json(absolutePath+suffix);
+			json capitals_info;
+			capitals_json >> capitals_info;
+
+			for (auto& [key, value] : capitals_info.items()) 
+			if (key == "features")
+			{
+				std::cout << key <<  " : " << value[2]["geometry"].dump(4) << '\n' << std::endl;
+			}
+			capitals_info = NULL;
+			capitals_json.close();
+		}
+		catch(json::parse_error& ex)
+		{
+			std::cerr << "Parser error at byte [" << ex.byte << "]" << std::endl;
+		}
+	}
+
+	void usage(void)
+	{
+		std::cout << "Usage: bss [options] ..." 
+			  << "\nOptions:\n" 
+			  << "-c\t\tcountry of interest. Default: All\n"
+			  << "-t\t\ttype of calculation. Default: border\n"
+			  << "\nExamples:\n\t\t"
+			  << "bss -c AEZ -t border\n"
+			  << "\t\tbss -c KSA -t center\n"
+			  << std::endl;
+	}
+
 }
