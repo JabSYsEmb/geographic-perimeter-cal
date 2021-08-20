@@ -11,12 +11,14 @@ namespace parser
 {
 	struct parsedArguments 
 	{
-		std::string countery_iso{};
+		std::string iso{};
 		std::string calculateMode{};
 	};
 	typedef struct parsedArguments parsedArguments;
 	
 	void usage(void);
+	void c_handler(std::string* cflag, char* optarg);
+	void t_handler(std::string* tflag, char* optarg);
 	void json_reader(const parsedArguments& country_info);
 	parsedArguments arguments(const int& argc, char** arguments);
 
@@ -32,22 +34,15 @@ namespace parser
 		else
 		{
 			int c{0};
-			while ((c = getopt(argc, arguments, "c:t:help")) != EOF)
+			while ((c = getopt(argc, arguments, "c:t:h")) != EOF)
 			{
 				switch (c) 
 				{
 					case 'c':
-						if (optarg) cflag.assign(optarg);
-						else std::cout << "-c country of interest. Default: All" << std::endl;
-						if(cflag.length() != 3)
-						{
-							cflag.assign("All");
-							break;
-						}	
+						c_handler(&cflag, optarg);
 						break;
 					case 't':
-						if (optarg) tflag.assign(optarg);
-						else std::cout << "type of calculation. Default: border" << std::endl;
+						t_handler(&tflag, optarg);
 						break;
 					case 'h':
 						parser::usage();
@@ -60,23 +55,42 @@ namespace parser
 		return parsedArguments{cflag,tflag};
 	}
 
+	void c_handler(std::string* cflag, char* optarg)
+	{
+		if (optarg) cflag->assign(optarg);
+
+		if (cflag->length() != 3)
+		{
+			cflag->assign("All");
+		}	
+	}
+
+	void t_handler(std::string* tflag, char* optarg)
+	{
+		if (optarg) tflag->assign(optarg);
+	}
+
 	void json_reader(const parsedArguments& country_info)
 	{
 		std::string absolutePath = "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/";
 		std::string suffix = "capitals.geojson";
-		std::cout << "-c : \t\t" << country_info.countery_iso 
-			  << "\n-t : \t\t" << country_info.calculateMode 
-			  << std::endl;
 		try
 		{
-			std::ifstream capitals_json(absolutePath+suffix);
 			json capitals_info;
+			std::ifstream capitals_json(absolutePath+suffix);
 			capitals_json >> capitals_info;
 
-			for (auto& [key, value] : capitals_info.items()) 
-			if (key == "features")
+			if (country_info.iso == "All")
 			{
-				std::cout << key <<  " : " << value[2]["geometry"].dump(4) << '\n' << std::endl;
+				std::cout << "here" << std::endl;
+				for (auto& _t : capitals_info["features"])
+					std::cout << std::setw(3) << _t << std::endl;
+			}
+			else
+			{
+				for (auto& _t : capitals_info["features"])
+				if (_t["properties"]["iso3"] == country_info.iso)
+					std::cout << std::setw(3) << _t << std::endl;
 			}
 			capitals_info = NULL;
 			capitals_json.close();
