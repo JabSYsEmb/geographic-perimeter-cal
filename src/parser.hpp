@@ -20,6 +20,7 @@ namespace parser
 
 	void usage(void);
 	json json_reader(std::string suffix);
+	std::string stringCapitalizer(char* str);
 	void c_handler(std::string* cflag, char* optarg);
 	void t_handler(std::string* tflag, char* optarg);
 	parsedInput inputParser(const int& argc, char** arguments);
@@ -61,7 +62,7 @@ namespace parser
 
 	void c_handler(std::string* cflag, char* optarg)
 	{
-		if (optarg) cflag->assign(optarg);
+		if (optarg) cflag->assign(stringCapitalizer(optarg));
 
 		if (cflag->length() != 3)
 		{
@@ -72,6 +73,19 @@ namespace parser
 	void t_handler(std::string* tflag, char* optarg)
 	{
 		if (optarg) tflag->assign(optarg);
+	}
+
+	std::string stringCapitalizer(char* str)
+	{
+		std::string capitalizedString{};
+		while(*str != '\0')
+		{
+			if(*str >= 97)
+				*str = *str - 32;
+			capitalizedString.push_back(*str);
+			++(str);
+		}
+		return capitalizedString;
 	}
 
 	json json_reader(std::string suffix)
@@ -94,6 +108,7 @@ namespace parser
 
 	void capital_parser(const parsedInput& country_info, json& data)
 	{
+		bool isCountryInData{false};
 		if (country_info.iso == "All")
 		{
 			for (auto& _t : data["features"])
@@ -103,7 +118,17 @@ namespace parser
 		{
 			for (auto& _t : data["features"])
 			if (_t["properties"]["iso3"] == country_info.iso)
+			{
 				std::cout << std::setw(3) << _t << std::endl;
+				isCountryInData = true;
+			}
+		}
+		if(!isCountryInData)
+		{
+			std::cout << "Nothing has been found with '" 
+				  << country_info.iso 
+				  << "' ISO code" 
+				  << std::endl;
 		}
 	}
 
