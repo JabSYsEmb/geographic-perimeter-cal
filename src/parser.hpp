@@ -10,22 +10,31 @@
 using nlohmann::json;
 
 namespace parser
-{
-	struct parsedInput 
+{ struct parsedInput 
 	{
 		std::string iso{};
 		std::string calculateMode{};
 	};
 	typedef struct parsedInput parsedInput;
 
+	enum choice { ALL = 1, SINGLE };
+
 	void usage(void);
+	void json_printer(json temp);
 	json json_reader(std::string suffix);
-	std::string stringCapitalizer(char* str);
+
+	parsedInput inputParser(const int& argc, char** arguments);
 	void c_handler(std::string* cflag, char* optarg);
 	void t_handler(std::string* tflag, char* optarg);
-	parsedInput inputParser(const int& argc, char** arguments);
-	void capital_parser(const std::string& country_iso, json& data); 
+	std::string stringCapitalizer(char* str);
+	choice enum_countries_setter(std::string str);
+
 	void country_parser(const std::string& country_iso, json& data);
+	void capital_parser(const std::string& country_iso, json& data); 
+	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound);
+	void all_handler(json& data);
+
+	void notFoundCountryError(bool isCountryFound, std::string country_iso);
 
 	parsedInput inputParser(const int& argc, char** arguments)
 	{
@@ -109,32 +118,53 @@ namespace parser
 
 	void capital_parser(const std::string& country_iso, json& data)
 	{
-		bool noThingFound{true};
-		if (country_iso == "All")
+		bool isCountryFound{false};
+		switch (enum_countries_setter(country_iso))
 		{
-			for (auto& _t : data["features"])
-			{
-				std::cout << std::setw(3) << _t << std::endl;
-			}
-			noThingFound = false;
-		}
-		else
-		{
-			for (auto& _t : data["features"])
-			if (_t["properties"]["iso3"] == country_iso)
-			{
-				std::cout << std::setw(3) << _t << std::endl;
-				noThingFound = false;
+			case ALL:
+				all_handler(data);
+				isCountryFound = true;
 				break;
-			}
+			case SINGLE:
+				single_handler(country_iso, data, &isCountryFound);
+				break;
 		}
-		if(noThingFound)
+		notFoundCountryError(isCountryFound, country_iso);
+	}
+
+	void single_handler(const std::string& country_iso, json& data,bool* isCountryFound)
+	{
+		for (auto& _t : data["features"])
+		if (_t["properties"]["iso3"] == country_iso)
 		{
-			std::cout << "Nothing has been found with '" 
-				  << country_iso
-				  << "' ISO code" 
-				  << std::endl;
+			json_printer(_t);
+			json countries_data = parser::json_reader("countries.geojson");
+			country_parser(country_iso, 
+				       countries_data);
+			*isCountryFound = true;
+			break;
 		}
+	}
+
+	void all_handler(json& data)
+	{
+		for (auto& _t : data["features"])
+		{
+			json_printer(_t);
+		}
+	}
+
+	void json_printer(json temp)
+	{
+		std::cout << std::setw(4) << temp << std::endl;
+	}
+
+	choice enum_countries_setter(std::string str)
+	{
+		choice choice;
+		if ( str == "All" ) choice = ALL;
+		else choice = SINGLE;
+		return choice;
 	}
 
 	void country_parser(const std::string& country_iso, json& data)
@@ -142,9 +172,21 @@ namespace parser
 		for (auto& _t : data["features"])
 		if (_t["properties"]["ISO_A3"] == country_iso)
 		{
-			std::cout << std::setw(3) << _t["geometry"]["coordinates"]<< std::endl;
+			json_printer(_t["geometry"]["coordinates"]);
 			break;
 		}
+	}
+
+	void notFoundCountryError(bool isCountryFound, std::string country_iso)
+	{
+		if(!isCountryFound)
+		{
+			std::cerr << "Nothing has been found with '" 
+				  << country_iso
+				  << "' ISO code" 
+				  << std::endl;
+		}
+
 	}
 
 	void usage(void)
