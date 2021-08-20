@@ -24,7 +24,8 @@ namespace parser
 	void c_handler(std::string* cflag, char* optarg);
 	void t_handler(std::string* tflag, char* optarg);
 	parsedInput inputParser(const int& argc, char** arguments);
-	void capital_parser(const parsedInput& country_info, json& data); 
+	void capital_parser(const std::string& country_iso, json& data); 
+	void country_parser(const std::string& country_iso, json& data);
 
 	parsedInput inputParser(const int& argc, char** arguments)
 	{
@@ -70,11 +71,6 @@ namespace parser
 		}	
 	}
 
-	void t_handler(std::string* tflag, char* optarg)
-	{
-		if (optarg) tflag->assign(optarg);
-	}
-
 	std::string stringCapitalizer(char* str)
 	{
 		std::string capitalizedString{};
@@ -86,6 +82,11 @@ namespace parser
 			++(str);
 		}
 		return capitalizedString;
+	}
+	
+	void t_handler(std::string* tflag, char* optarg)
+	{
+		if (optarg) tflag->assign(optarg);
 	}
 
 	json json_reader(std::string suffix)
@@ -106,29 +107,43 @@ namespace parser
 		}
 	}
 
-	void capital_parser(const parsedInput& country_info, json& data)
+	void capital_parser(const std::string& country_iso, json& data)
 	{
-		bool isCountryInData{false};
-		if (country_info.iso == "All")
+		bool noThingFound{true};
+		if (country_iso == "All")
 		{
 			for (auto& _t : data["features"])
+			{
 				std::cout << std::setw(3) << _t << std::endl;
+			}
+			noThingFound = false;
 		}
 		else
 		{
 			for (auto& _t : data["features"])
-			if (_t["properties"]["iso3"] == country_info.iso)
+			if (_t["properties"]["iso3"] == country_iso)
 			{
 				std::cout << std::setw(3) << _t << std::endl;
-				isCountryInData = true;
+				noThingFound = false;
+				break;
 			}
 		}
-		if(!isCountryInData)
+		if(noThingFound)
 		{
 			std::cout << "Nothing has been found with '" 
-				  << country_info.iso 
+				  << country_iso
 				  << "' ISO code" 
 				  << std::endl;
+		}
+	}
+
+	void country_parser(const std::string& country_iso, json& data)
+	{
+		for (auto& _t : data["features"])
+		if (_t["properties"]["ISO_A3"] == country_iso)
+		{
+			std::cout << std::setw(3) << _t["geometry"]["coordinates"]<< std::endl;
+			break;
 		}
 	}
 
