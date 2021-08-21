@@ -39,4 +39,10 @@ float CalcHaversinDistance(double& latitud1, double& longitud1, double& latitud2
 double toRadians(double* degree) {
     return (*degree) * M_PI / 180;
 }
+
+double calcSensingCableLength()
+{
+    return 0;
+}
+
 #endif

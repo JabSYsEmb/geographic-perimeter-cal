@@ -1,10 +1,10 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include <unistd.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
 #include <string>
+#include <iomanip>
+#include <fstream>
+#include <iostream>
+#include <unistd.h>
 #include "json.hpp"
 
 #define FLAGS "c:t:h"
@@ -20,7 +20,7 @@ namespace parser
 	struct parsedInput 
 	{
 		std::string iso{};
-		std::string calculateMode{};
+		std::string calcType{};
 	};
 	typedef struct parsedInput parsedInput;
 
@@ -32,23 +32,26 @@ namespace parser
 	typedef struct coordinate coordinate;
 	#include "MathPart.hpp"
 
-	enum choice { ALL = 1, SINGLE }; // all for all countries, Single for a single country
+	enum c_choice { ALL = 1, SINGLE }; // all for all countries, Single for a single country
+	enum t_choice { BORDER = 1, SENSING_CABLE};
 
 	void usage(void);
 	void json_printer(json temp);
-	void all_handler(json& data); // all argument handler
+	void notFoundOperationError();
+	void country_json_parser(json& data); // all argument handler
 	void c_handler(std::string* cflag, char* optarg); // c parameter handler
 	void t_handler(std::string* tflag, char* optarg); // t parameter handler
+	void bss(const std::string& country_iso, json& data); // country geojson reader
 	void assignCoordinates(coordinate* temp, json& _point); // assign a coordinate according to a point
-	void country_parser(const std::string& country_iso, json& data); // country geojson reader
-	void capital_parser(const std::string& country_iso, json& data); // capital geogson reader
+	void calcBorderLength(const std::string& country_iso, json& data); // capital geogson reader
 	void notFoundCountryError(bool isCountryFound, std::string country_iso); // notFoundError 
+	void getCountryById(const std::string& country_iso, json& data, bool* isCountryFound); // in case just a country iso entered
 	double calcDistanceFromArray(std::valarray<std::valarray<double>> array_points);
-	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound); // in case just a country iso entered
 
 	json json_reader(std::string suffix);
 	std::string stringCapitalizer(char* str);
-	choice enum_countries_setter(std::string str);
+	t_choice enum_calcType_setter(std::string str);
+	c_choice enum_countries_setter(std::string str);
 	parsedInput inputParser(const int& argc, char** arguments);
 	
 	parsedInput inputParser(const int& argc, char** arguments)
@@ -110,7 +113,7 @@ namespace parser
 	
 	void t_handler(std::string* tflag, char* optarg)
 	{
-		if (optarg) tflag->assign(optarg);
+		if (optarg) tflag->assign(stringCapitalizer(optarg));
 	}
 
 	json json_reader(std::string suffix)
@@ -131,37 +134,55 @@ namespace parser
 		}
 	}
 
-	void capital_parser(const std::string& country_iso, json& data)
+	void bss(const parsedInput& country, json& data)
 	{
 		bool isCountryFound{false};
-		switch (enum_countries_setter(country_iso))
+		switch (enum_countries_setter(country.iso))
 		{
 			case ALL:
-				all_handler(data);
+				switch (enum_calcType_setter(country.calcType))
+				{
+					case BORDER:
+						country_json_parser(data);
+						break;
+					case SENSING_CABLE:
+						break;
+				}
 				isCountryFound = true;
 				break;
 			case SINGLE:
-				single_handler(country_iso, data, &isCountryFound);
+				switch (enum_calcType_setter(country.calcType))
+				{
+					case BORDER:
+						getCountryById(country.iso, data, &isCountryFound);
+						break;
+					case SENSING_CABLE:
+						break;
+					default:
+						notFoundOperationError();
+						break;
+				}
 				break;
 		}
-		notFoundCountryError(isCountryFound, country_iso);
+		notFoundCountryError(isCountryFound, country.iso);
+		data=nullptr;
 	}
 
-	void single_handler(const std::string& country_iso, json& data,bool* isCountryFound)
+	void getCountryById(const std::string& country_iso, json& data,bool* isCountryFound)
 	{
 		for (auto& _t : data["features"])
 		if (_t["properties"]["iso3"] == country_iso)
 		{
 			json_printer(_t);
 			json countries_data = parser::json_reader(COUNTRIES_JSON);
-			country_parser(country_iso, 
+			calcBorderLength(country_iso, 
 				       countries_data);
 			*isCountryFound = true;
 			break;
 		}
 	}
 
-	void all_handler(json& data)
+	void country_json_parser(json& data)
 	{
 		for (auto& _t : data["features"])
 		{
@@ -174,15 +195,22 @@ namespace parser
 		std::cout << std::setw(4) << temp << std::endl;
 	}
 
-	choice enum_countries_setter(std::string str)
+	c_choice enum_countries_setter(std::string str)
 	{
-		choice choice;
+		c_choice choice;
 		if ( str == ALL_COUNTRY ) choice = ALL;
 		else choice = SINGLE;
 		return choice;
 	}
 
-	void country_parser(const std::string& country_iso, json& data)
+	t_choice enum_calcType_setter(std::string str)
+	{
+		t_choice choice;
+		str == "BORDER" ? choice = BORDER : choice = SENSING_CABLE;
+		return choice;
+	}
+
+	void calcBorderLength(const std::string& country_iso, json& data)
 	{
 		for (auto& _t : data["features"])
 		if (_t["properties"]["ISO_A3"] == country_iso)
@@ -201,6 +229,7 @@ namespace parser
 						}
 					}
 				}
+			// return distance;
 			std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
 		}
 	}
@@ -231,6 +260,13 @@ namespace parser
 				  << std::endl;
 		}
 
+	}
+
+	void notFoundOperationError()
+	{
+		std::cerr << 
+		"Unvalid operation, it's possible only to have calculate the border length or the sensing cable length" 
+		<< std::endl;
 	}
 
 	void usage(void)
