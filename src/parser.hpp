@@ -37,6 +37,7 @@ namespace parser
 	void country_parser(const std::string& country_iso, json& data); // country geojson reader
 	void capital_parser(const std::string& country_iso, json& data); // capital geogson reader
 	void notFoundCountryError(bool isCountryFound, std::string country_iso); // notFoundError 
+	double calcDistanceFromArray(std::valarray<std::valarray<double>> array_points);
 	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound); // in case just a country iso entered
 
 	json json_reader(std::string suffix);
@@ -180,26 +181,33 @@ namespace parser
 		for (auto& _t : data["features"])
 		if (_t["properties"]["ISO_A3"] == country_iso)
 		{
-			bool first_point = true;
-			coordinate temp;
 			double distance{0};
 			for (auto& _array_points : _t["geometry"]["coordinates"])
-			for (auto& _point : _array_points)
-			{
-				if(first_point)
 				{
-					assignCoordinates(&temp,_point);
-					first_point = false;	
+					if(!_array_points[0][0].is_array())
+					{
+						distance += calcDistanceFromArray(_array_points);
+					}
+					else{
+						for (size_t i = 0; i < _array_points.size(); i++)
+						{
+							distance += calcDistanceFromArray(_array_points[i]);
+						}
+					}
 				}
-				else
-				{
-					distance += calcDistance(&temp, _point[0], _point[1]);
-					assignCoordinates(&temp,_point);
-				}
-			}
 			std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
 		break;
 		}
+	}
+
+	double calcDistanceFromArray(std::valarray<std::valarray<double>> _array_points)
+	{
+		double distance{0};
+		for (size_t i = 0; i < _array_points.size(); i++)
+		{
+			distance += calcDistance(_array_points[i], _array_points[(i+1)% _array_points.size()]);
+		}
+		return distance;
 	}
 
 	void assignCoordinates(coordinate* temp, json& _point)

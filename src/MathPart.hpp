@@ -7,9 +7,13 @@
 double toRadians(double* degree);
 float CalcHaversinDistance(double& latitud1, double& longitud1, double& latitud2, double& longitud2);
 
-float calcDistance(coordinate* first_point, double coordsX, double coordsY)
+float calcDistance(std::valarray<double> point_1, std::valarray<double> point_2)
+{
+    return double{CalcHaversinDistance(point_1[0],point_1[1],point_2[0],point_2[1])};
+}
+float calcDistance(coordinate* previous_point, double coordsX, double coordsY)
 {	
-	return double{CalcHaversinDistance(first_point->_x,first_point->_y,coordsX,coordsY)};
+	return double{CalcHaversinDistance(previous_point->_x,previous_point->_y,coordsX,coordsY)};
 }
 
 float CalcHaversinDistance(double& latitud1, double& longitud1, double& latitud2, double& longitud2){
