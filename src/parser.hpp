@@ -30,22 +30,20 @@ namespace parser
 
 	void usage(void);
 	void json_printer(json temp);
-	json json_reader(std::string suffix);
-	void foo(coordinate* temp, json& _point);
-
-	parsedInput inputParser(const int& argc, char** arguments);
+	void all_handler(json& data);
+	void assignCoordinates(coordinate* temp, json& _point);
 	void c_handler(std::string* cflag, char* optarg);
 	void t_handler(std::string* tflag, char* optarg);
-	std::string stringCapitalizer(char* str);
-	choice enum_countries_setter(std::string str);
-
 	void country_parser(const std::string& country_iso, json& data);
 	void capital_parser(const std::string& country_iso, json& data); 
-	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound);
-	void all_handler(json& data);
-
 	void notFoundCountryError(bool isCountryFound, std::string country_iso);
+	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound);
 
+	json json_reader(std::string suffix);
+	std::string stringCapitalizer(char* str);
+	choice enum_countries_setter(std::string str);
+	parsedInput inputParser(const int& argc, char** arguments);
+	
 	parsedInput inputParser(const int& argc, char** arguments)
 	{
 		std::string cflag{"All"};
@@ -195,24 +193,16 @@ namespace parser
 				}
 				else
 				{
-//					std::cout << temp._x 
-//						  << ", " 
-//						  << temp._y
-//					          << " : " 
-//						  << std::setw(3) 
-//						  << _point 
-//						  << std::endl;
 					distance += calcDistance(&temp, _point[0], _point[1]);
-					std::cout << "Distance : " << distance << std::endl;
 					foo(&temp,_point);
 				}
 			}
-			std::cout << distance << std::endl;
+			std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
 		break;
 		}
 	}
 
-	void foo(coordinate* temp, json& _point)
+	void assignCoordinates(coordinate* temp, json& _point)
 	{
 		temp->_x = _point[0];
 		temp->_y = _point[1];
