@@ -31,7 +31,11 @@ namespace parser
 	void usage(void);
 	void json_printer(json temp);
 	void all_handler(json& data);
+<<<<<<< HEAD
 	void assignCoordinates(coordinate* temp, json& _point);
+=======
+	void foo(coordinate* temp, json& _point);
+>>>>>>> 005df087c15773171df9e1e62e744a56253907bb
 	void c_handler(std::string* cflag, char* optarg);
 	void t_handler(std::string* tflag, char* optarg);
 	void country_parser(const std::string& country_iso, json& data);
