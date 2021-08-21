@@ -7,6 +7,12 @@
 #include <string>
 #include "json.hpp"
 
+#define FLAGS "c:t:h"
+#define ALL_COUNTRY "All"
+#define CALC_BORDER "border"
+#define COUNTRIES_JSON "countries.geojson"
+#define DATA_DIRECTORY "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/"
+
 using nlohmann::json;
 
 namespace parser
@@ -47,8 +53,8 @@ namespace parser
 	
 	parsedInput inputParser(const int& argc, char** arguments)
 	{
-		std::string cflag{"All"};
-		std::string tflag{"border"};
+		std::string cflag{ALL_COUNTRY};
+		std::string tflag{CALC_BORDER};
 		if (argc <= 1)
 		{
 			std::cout << "Some arguments are missing, try again!\n"
@@ -58,7 +64,7 @@ namespace parser
 		else
 		{
 			int c{0};
-			while ((c = getopt(argc, arguments, "c:t:h")) != EOF)
+			while ((c = getopt(argc, arguments, FLAGS)) != EOF)
 			{
 				switch (c) 
 				{
@@ -85,7 +91,7 @@ namespace parser
 
 		if (cflag->length() != 3)
 		{
-			cflag->assign("All");
+			cflag->assign(ALL_COUNTRY);
 		}	
 	}
 
@@ -109,7 +115,7 @@ namespace parser
 
 	json json_reader(std::string suffix)
 	{
-		std::string absolutePath = "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/";
+		std::string absolutePath = DATA_DIRECTORY;
 		try
 		{
 			json capitals_info;
@@ -147,7 +153,7 @@ namespace parser
 		if (_t["properties"]["iso3"] == country_iso)
 		{
 			json_printer(_t);
-			json countries_data = parser::json_reader("countries.geojson");
+			json countries_data = parser::json_reader(COUNTRIES_JSON);
 			country_parser(country_iso, 
 				       countries_data);
 			*isCountryFound = true;
@@ -171,7 +177,7 @@ namespace parser
 	choice enum_countries_setter(std::string str)
 	{
 		choice choice;
-		if ( str == "All" ) choice = ALL;
+		if ( str == ALL_COUNTRY ) choice = ALL;
 		else choice = SINGLE;
 		return choice;
 	}
@@ -196,7 +202,6 @@ namespace parser
 					}
 				}
 			std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
-		break;
 		}
 	}
 

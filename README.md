@@ -9,7 +9,7 @@ A Terminal-based application to calculate the distance among points provided by 
 
 ## Compilation of the project
 
-At first, it's needed to change the path in [parser.hpp](https://github.com/JabSYsEmb/Perimeter_calculator/blob/main/src/parser.hpp#L111) at the 111. line to point to the geojsons files and check if names are written correctly.
+At first, it's needed to change the path in [parser.hpp](https://github.com/JabSYsEmb/Perimeter_calculator/blob/main/src/parser.hpp#L14) to point to the geojsons files and check if names are written correctly.
 
 To compile the project, cd into the folder where the project has been downloaded then write the following:
 
