@@ -26,18 +26,18 @@ namespace parser
 	typedef struct coordinate coordinate;
 	#include "MathPart.hpp"
 
-	enum choice { ALL = 1, SINGLE };
+	enum choice { ALL = 1, SINGLE }; // all for all countries, Single for a single country
 
 	void usage(void);
 	void json_printer(json temp);
-	void all_handler(json& data);
-	void c_handler(std::string* cflag, char* optarg);
-	void t_handler(std::string* tflag, char* optarg);
-	void assignCoordinates(coordinate* temp, json& _point);
-	void country_parser(const std::string& country_iso, json& data);
-	void capital_parser(const std::string& country_iso, json& data); 
-	void notFoundCountryError(bool isCountryFound, std::string country_iso);
-	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound);
+	void all_handler(json& data); // all argument handler
+	void c_handler(std::string* cflag, char* optarg); // c parameter handler
+	void t_handler(std::string* tflag, char* optarg); // t parameter handler
+	void assignCoordinates(coordinate* temp, json& _point); // assign a coordinate according to a point
+	void country_parser(const std::string& country_iso, json& data); // country geojson reader
+	void capital_parser(const std::string& country_iso, json& data); // capital geogson reader
+	void notFoundCountryError(bool isCountryFound, std::string country_iso); // notFoundError 
+	void single_handler(const std::string& country_iso, json& data, bool* isCountryFound); // in case just a country iso entered
 
 	json json_reader(std::string suffix);
 	std::string stringCapitalizer(char* str);
