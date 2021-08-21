@@ -188,13 +188,13 @@ namespace parser
 			{
 				if(first_point)
 				{
-					foo(&temp,_point);
+					assignCoordinates(&temp,_point);
 					first_point = false;	
 				}
 				else
 				{
 					distance += calcDistance(&temp, _point[0], _point[1]);
-					foo(&temp,_point);
+					assignCoordinates(&temp,_point);
 				}
 			}
 			std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
