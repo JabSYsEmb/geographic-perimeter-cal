@@ -23,3 +23,17 @@ The project should be compiled and if you type, you will see as in the screensho
 ls -la 
 ```
 ![default trace](./content/screenshot.png)
+
+Now, we need to execute the application in terminal 
+``` 
+./bss -c [ISO_A3] -t [border/center]
+ISO_A3         : country of interest {Default: All} [not case-sensitive]
+border/center  : type of calculation {Default: border}
+```
+Examples:
+```
+For calculate border of Azerbaijan
+./bss -c {AZE or aze} -t border
+For calculate sensing cable length of Azerbaijan
+./bss -c AZE -t cable
+```
