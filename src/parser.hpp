@@ -10,18 +10,28 @@
 using nlohmann::json;
 
 namespace parser
-{ struct parsedInput 
+{ 
+	struct parsedInput 
 	{
 		std::string iso{};
 		std::string calculateMode{};
 	};
 	typedef struct parsedInput parsedInput;
 
+	struct coordinate
+	{
+		double _x{};
+		double _y{};
+	};
+	typedef struct coordinate coordinate;
+	#include "MathPart.hpp"
+
 	enum choice { ALL = 1, SINGLE };
 
 	void usage(void);
 	void json_printer(json temp);
 	json json_reader(std::string suffix);
+	void foo(coordinate* temp, json& _point);
 
 	parsedInput inputParser(const int& argc, char** arguments);
 	void c_handler(std::string* cflag, char* optarg);
@@ -172,9 +182,40 @@ namespace parser
 		for (auto& _t : data["features"])
 		if (_t["properties"]["ISO_A3"] == country_iso)
 		{
-			json_printer(_t["geometry"]["coordinates"]);
-			break;
+			bool first_point = true;
+			coordinate temp;
+			double distance{0};
+			for (auto& _array_points : _t["geometry"]["coordinates"])
+			for (auto& _point : _array_points)
+			{
+				if(first_point)
+				{
+					foo(&temp,_point);
+					first_point = false;	
+				}
+				else
+				{
+//					std::cout << temp._x 
+//						  << ", " 
+//						  << temp._y
+//					          << " : " 
+//						  << std::setw(3) 
+//						  << _point 
+//						  << std::endl;
+					distance += calcDistance(&temp, _point[0], _point[1]);
+					std::cout << "Distance : " << distance << std::endl;
+					foo(&temp,_point);
+				}
+			}
+			std::cout << distance << std::endl;
+		break;
 		}
+	}
+
+	void foo(coordinate* temp, json& _point)
+	{
+		temp->_x = _point[0];
+		temp->_y = _point[1];
 	}
 
 	void notFoundCountryError(bool isCountryFound, std::string country_iso)
