@@ -22,4 +22,4 @@ The project should be compiled and if you type, you will see as in the screensho
 ``` bash 
 ls -la 
 ```
-(./content/screenshot.png)
+![default trace](./content/screenshot.png)
