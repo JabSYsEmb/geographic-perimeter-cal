@@ -4,17 +4,17 @@
 
 #define RADIO_OF_EARTH 6372797.56085
 
-void calcBorderLength(const std::string& country_iso, json& data);
+void calcBorderLength(country::Country* country , json& data);
 
 double toRadians(double* degree);
 double calcDistanceFromArray(std::valarray<std::valarray<double>> _array_points);
 double calcDistance(std::valarray<double> point_1, std::valarray<double> point_2);
 double CalcHaversinDistance(double& latitud1, double& longitud1, double& latitud2, double& longitud2);
 
-void calcBorderLength(const std::string& country_iso, json& data)
+void calcBorderLength(country::Country* country, json& data)
 {
     for (auto& _t : data["features"])
-    if (_t["properties"]["ISO_A3"] == country_iso)
+    if (_t["properties"]["ISO_A3"] == country->getISO())
     {
         double distance{0};
         for (auto& _array_points : _t["geometry"]["coordinates"])
@@ -30,7 +30,8 @@ void calcBorderLength(const std::string& country_iso, json& data)
                     }
                 }
             }
-        std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
+        country->setLength(distance);
+        // std::cout << std::setprecision(1) << std::fixed << distance  << std::endl;
     }
 }
 

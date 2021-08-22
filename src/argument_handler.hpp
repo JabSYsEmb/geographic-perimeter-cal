@@ -1,7 +1,7 @@
 #define ALL_COUNTRY "All"
 #define CALC_BORDER "border"
 
-enum c_choice { ALL = 1, SINGLE }; // all for all countries, Single for a single country
+enum c_choice { ALL = 1, SINGLE_COUNTRY }; // all for all countries, Single for a single country
 enum t_choice { BORDER = 1, SENSING_CABLE};
 
 void c_handler(std::string* cflag, char* optarg); // c parameter handler
@@ -29,14 +29,16 @@ c_choice enum_countries_setter(std::string str)
 {
     c_choice choice;
     if ( str == ALL_COUNTRY ) choice = ALL;
-    else choice = SINGLE;
+    else choice = SINGLE_COUNTRY;
     return choice;
 }
 
 t_choice enum_calcType_setter(std::string str)
 {
     t_choice choice;
-    str == "BORDER" ? choice = BORDER : choice = SENSING_CABLE;
+    if(str == "BORDER") choice = BORDER;
+    else if(str == "CABLE") choice = SENSING_CABLE;
+
     return choice;
 }
 

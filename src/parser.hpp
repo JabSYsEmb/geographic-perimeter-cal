@@ -5,9 +5,8 @@
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
-#include "json.hpp"
-#include "argument_handler.hpp"
 #include "Country.hpp"
+#include "argument_handler.hpp"
 
 #define FLAGS "c:t:h"
 #define ALL_COUNTRY "All"
@@ -31,13 +30,13 @@ namespace parser
 	void usage(void);
 	void json_printer(json temp);
 	void notFoundOperationError();
-	void country_json_parser(json& data); // all argument handler
-
-	void bss(const std::string& country_iso, json& data); // country geojson reader
-	void calcBorderLength(const std::string& country_iso, json& data); // capital geogson reader
-	void notFoundCountryError(bool isCountryFound, std::string country_iso); // notFoundError 
-	country::Country getCountryById(const parsedInput& country, json& data,bool* isCountryFound); // in case just a country iso entered
-
+	void country_json_parser(json& data);
+	void notFoundCountryError(bool isCountryFound); 
+	void calcBorderLength(country::Country* country);
+	void bss(const std::string& country_iso, json& data);
+	void calcBorderLength(const std::string& country_iso, json& data); 
+	country::Country getCountryById(const parsedInput& country, json& data); 
+	
 	json json_reader(std::string suffix);
 	parsedInput inputParser(const int& argc, char** arguments);
 	
@@ -96,7 +95,9 @@ namespace parser
 	// border security system _main_
 	void bss(const parsedInput& country, json& data)
 	{
-		bool isCountryFound{false};
+		// TO-DO:
+		// countryNotFoundError func
+		country::Country _country;
 		switch (enum_countries_setter(country.iso))
 		{
 			case ALL:
@@ -106,17 +107,20 @@ namespace parser
 						country_json_parser(data);
 						break;
 					case SENSING_CABLE:
+
 						break;
 				}
-				isCountryFound = true;
 				break;
-			case SINGLE:
+			case SINGLE_COUNTRY:
+				_country = getCountryById(country, data);
 				switch (enum_calcType_setter(country.calcType))
 				{
 					case BORDER:
-						getCountryById(country, data, &isCountryFound).toString();
+						calcBorderLength(&_country);
+						std::cout << _country.get_json().dump(3) << std::endl;
 						break;
 					case SENSING_CABLE:
+
 						break;
 					default:
 						notFoundOperationError();
@@ -124,11 +128,9 @@ namespace parser
 				}
 				break;
 		}
-		notFoundCountryError(isCountryFound, country.iso);
-		data=nullptr;
 	}
 
-	country::Country getCountryById(const parsedInput& country, json& data,bool* isCountryFound)
+	country::Country getCountryById(const parsedInput& country, json& data)
 	{
 		country::Country temp;
 		for (auto& _t : data["features"])
@@ -136,14 +138,21 @@ namespace parser
 			if (_t["properties"]["iso3"] == country.iso)
 			{
 				temp = country::Country(_t["properties"]["country"] ,country.iso,country.calcType);
-				json countries_data = parser::json_reader(COUNTRIES_JSON);
-				calcBorderLength(country.iso, 
-						countries_data);
-				*isCountryFound = true;
 				return temp;
 			}
 		}
 		return temp;
+	}
+
+	void calcBorderLength(country::Country* country)
+	{
+		json countries_data = parser::json_reader(COUNTRIES_JSON);
+		calcBorderLength(country, countries_data);
+	}
+
+	void calcSensingCableLength(country::Country* country)
+	{
+		
 	}
 
 	void country_json_parser(json& data)
@@ -159,13 +168,11 @@ namespace parser
 		std::cout << std::setw(4) << temp << std::endl;
 	}
 
-	void notFoundCountryError(bool isCountryFound, std::string country_iso)
+	void notFoundCountryError(bool isCountryFound)
 	{
-		if(!isCountryFound)
+		if(isCountryFound == false)
 		{
-			std::cerr << "Nothing has been found with '" 
-				  << country_iso
-				  << "' ISO code" 
+			std::cerr << "No such a country has been found, try again!" 
 				  << std::endl;
 		}
 	}
@@ -173,7 +180,7 @@ namespace parser
 	void notFoundOperationError()
 	{
 		std::cerr << 
-		"Unvalid operation, it's possible only to have calculate the border length or the sensing cable length" 
+		"Unvalid operation, it's possible only to have the border length or the sensing cable length calculated" 
 		<< std::endl;
 	}
 
