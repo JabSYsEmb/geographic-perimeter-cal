@@ -24,7 +24,7 @@ ls -la
 ```
 ![default trace](./content/screenshot.png)
 
-Now, we need to execute the application in terminal 
+Now, we need to execute the application in terminal as follwoing:
 ``` 
 ./bss -c [ISO_A3] -t [border/center]
 ISO_A3         : country of interest {Default: All} [not case-sensitive]
@@ -46,6 +46,8 @@ $ ./bss -c AZE -t border
    "name": "Azerbaijan"
 }
 ```
+After the application is terminated it will output corresponding info to a json file in the same directory where it's executed.
+
 The distance two points is calculated by [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
 
 ### Haversine Forumla
