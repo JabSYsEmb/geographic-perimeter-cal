@@ -28,6 +28,7 @@ namespace parser
 	void json_printer(json temp);
 	void notFoundOperationError();
 	void country_json_parser(json& data);
+	country::Country getCountry(json& data);
 	void toJsonFormat(country::Country* country);
 	void notFoundCountryError(bool isCountryFound); 
 	void calcBorderLength(country::Country* country);
@@ -103,13 +104,11 @@ namespace parser
 				switch (enum_calcType_setter(country.calcType))
 				{
 					case BORDER:
-						// for (auto& country_iso : iso_countries)
-						//{
-							country_json_parser(data /*  country_iso */);
-						//}
+						json_printer(getCountry(data).get_json());
 						break;
 					case SENSING_CABLE:
-						country_json_parser(countries_data);
+						json_printer(getCountry(data).get_json());
+						// country_json_parser(countries_data);
 						// setSensingCableLength();
 						break;
 					case UNVALID:
@@ -141,15 +140,19 @@ namespace parser
 		}
 	}
 
-	country::Country getCountryById(const parsedInput& country, json& data)
+	country::Country getCountryById(const parsedInput& parsedInput, json& data)
 	{
 		country::Country temp;
 		for (auto& _t : data["features"])
 		{	
-			if (_t["properties"]["iso3"] == country.iso)
+			if (_t["properties"]["iso3"] == parsedInput.iso)
 			{
 				temp = country::Country(
-					_t["properties"]["country"], country.iso, _t["geometry"]["coordinates"][0], _t["geometry"]["coordinates"][1],country.calcType
+					_t["properties"]["country"], 
+					parsedInput.iso, 
+					_t["geometry"]["coordinates"][0], 
+					_t["geometry"]["coordinates"][1],
+					parsedInput.calcType
 					);
 
 				return temp;
@@ -168,12 +171,26 @@ namespace parser
 		foo(country, data);
 		json_printer(country->get_json());
 	}
+	
 	void country_json_parser(json& data)
 	{
 		for (auto& _t : data["features"])
 		{
 			json_printer(_t);
 		}
+	}
+
+	country::Country getCountry(json& data)
+	{
+		for (auto& _t : data["features"])
+		{
+			return country::Country(
+					_t["properties"]["country"],
+					_t["properties"]["iso3"],
+					_t["geometry"]["coordinates"][0],
+					_t["geometry"]["coordinates"][1]);
+		}
+		return country::Country();
 	}
 
 	void json_printer(json temp)

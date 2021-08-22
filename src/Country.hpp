@@ -25,6 +25,14 @@ namespace country
 				_coordinate._lat = lat;
 				_coordinate._lon = lon;
 			}
+			
+			Country(std::string name, std::string iso_a3, double lat, double lon) 
+			{
+				_name = name;
+				_iso_a3 = iso_a3;
+				_coordinate._lat = lat;
+				_coordinate._lon = lon;
+			}
 
 			Country(std::string name, std::string iso_a3, std::string calcType) 
 			: _name{name}, _iso_a3{iso_a3}, _calcType{calcType} {};
