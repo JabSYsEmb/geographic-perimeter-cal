@@ -30,7 +30,7 @@ namespace parser
 	void country_json_parser(json& data);
 	country::Country getCountry(json& data);
 	void toJsonFormat(country::Country* country);
-	void notFoundCountryError(bool isCountryFound); 
+	void notFoundCountryError(std::string country_iso);
 	void calcBorderLength(country::Country* country);
 	void setBorderLength(country::Country* country, json& data);
 	void setSensingCableLength(country::Country* country, json& data);
@@ -158,6 +158,7 @@ namespace parser
 				return temp;
 			}
 		}
+		notFoundCountryError(parsedInput.iso);
 		return temp;
 	}
 
@@ -198,13 +199,10 @@ namespace parser
 		std::cout << std::setw(4) << temp << std::endl;
 	}
 
-	void notFoundCountryError(bool isCountryFound)
+	void notFoundCountryError(std::string country_iso)
 	{
-		if(isCountryFound == false)
-		{
-			std::cerr << "No such a country has been found, try again!" 
-				  << std::endl;
-		}
+		std::cerr << "No such a country with (" << country_iso << ") has been found, try again!" 
+				<< std::endl;
 	}
 
 	void notFoundOperationError()
@@ -238,5 +236,6 @@ namespace parser
 			file <<	country->get_json() << std::endl;
 		}
 	}
+
 }
 #endif // PARSER_H
