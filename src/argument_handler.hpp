@@ -10,14 +10,22 @@ t_choice enum_calcType_setter(std::string str);
 c_choice enum_countries_setter(std::string str);
 std::string stringCapitalizer(char* str);
 
+void notISO_A3_Argument(void);
+
 void c_handler(std::string* cflag, char* optarg)
 {
     if (optarg) cflag->assign(stringCapitalizer(optarg));
 
     if (cflag->length() != 3)
     {
-        cflag->assign(ALL_COUNTRY);
+        notISO_A3_Argument();
     }	
+}
+
+void notISO_A3_Argument(void)
+{
+    std::cerr << "-c argument should consist of just 3 characters, check if you've entered it correctly." << std::endl;
+    return;
 }
 
 void t_handler(std::string* tflag, char* optarg)

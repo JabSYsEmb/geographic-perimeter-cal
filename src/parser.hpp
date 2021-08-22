@@ -24,21 +24,23 @@ namespace parser
 
 	#include "MathPart.hpp"
 
+	void bss(const std::string& country_iso, json& data, json& countries_data);
 	void usage(void);
-	void json_printer(json temp);
-	void notFoundOperationError();
-	void country_json_parser(json& data);
+	
 	country::Country getCountry(json& data);
+	country::Country getCountryById(const parsedInput& country, json& data);
+	
+	void json_printer(json temp);
+	void country_json_parser(json& data);
 	void toJsonFormat(country::Country* country);
-	void notFoundCountryError(std::string country_iso);
-	void calcBorderLength(country::Country* country);
+
 	void setBorderLength(country::Country* country, json& data);
 	void setSensingCableLength(country::Country* country, json& data);
-	country::Country getCountryById(const parsedInput& country, json& data); 
-	void bss(const std::string& country_iso, json& data, json& countries_data);
 	void getAllCountriesBorderCalculated(country::Country* _country,json& data,json& countries_data);
 	void getAllCountriesSensingCableCalculated(country::Country* _country,json& data,json& countries_data);
 
+	void notFoundOperationError();
+	void notFoundCountryError(std::string country_iso);
 	
 	json json_reader(std::string suffix);
 	parsedInput inputParser(const int& argc, char** arguments);
@@ -98,8 +100,6 @@ namespace parser
 	// border security system _main_
 	void bss(const parsedInput& country, json& data, json& countries_data)
 	{
-		// TO-DO:
-		// countryNotFoundError func
 		country::Country _country;
 		switch (enum_countries_setter(country.iso))
 		{
@@ -114,6 +114,7 @@ namespace parser
 						break;
 					case UNVALID:
 						notFoundOperationError();
+						return; // to terminate the call of bss function
 						break;
 					default:
 						country_json_parser(data);
@@ -126,11 +127,12 @@ namespace parser
 				{
 					case BORDER:
 						setBorderLength(&_country, countries_data);
-						std::cout << _country.get_json().dump(3) << std::endl;
+						json_printer(_country.get_json());
 						toJsonFormat(&_country);
 						break;
 					case SENSING_CABLE:
 						setSensingCableLength(&_country, countries_data);
+						json_printer(_country.get_json());
 						toJsonFormat(&_country);
 						break;
 					default:
@@ -234,24 +236,26 @@ namespace parser
 	{
 		std::cerr << "No such a country with (" << country_iso << ") has been found, try again!" 
 				<< std::endl;
+		return;
 	}
 
 	void notFoundOperationError()
 	{
 		std::cerr << 
-		"Unvalid operation, it's possible only to have the border length or the sensing cable length calculated" 
+		"Unvalid operation, it's possible only to have the 'border' length or the sensing 'cable' length calculated." 
 		<< std::endl;
+		usage();
 	}
 
 	void usage(void)
 	{
-		std::cout << "Usage: bss [options] ..." 
+		std::cout << "\nUsage: bss [options] ..." 
 			  << "\nOptions:\n" 
 			  << "-c\t\tcountry of interest. Default: All\n"
 			  << "-t\t\ttype of calculation. Default: border\n"
 			  << "\nExamples:\n\t\t"
 			  << "bss -c AEZ -t border\n"
-			  << "\t\tbss -c KSA -t center\n"
+			  << "\t\tbss -c tur -t ca2ble\n"
 			  << std::endl;
 	}
 
