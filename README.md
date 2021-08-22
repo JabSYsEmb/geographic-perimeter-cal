@@ -46,7 +46,10 @@ $ ./bss -c AZE -t border
    "name": "Azerbaijan"
 }
 ```
-After the application is terminated it will output corresponding info to a json file in the same directory where it's executed.
+After the application is terminated it will output corresponding info to a json file ```info.json``` in the same directory where it's executed, to print the content of the file out type the following:
+``` bash
+$ cat where/code/executed/info.json
+```
 
 The distance two points is calculated by [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
 
