@@ -51,9 +51,17 @@ After the application is terminated it will output corresponding info to a json 
 $ cat where/code/executed/info.json
 ```
 
+for calcuating the border length or sensing cable' length of the whole dataset, the following commends should be executed.
+```bash
+./bss -t border (for borders calculating)
+./bss -t cable  (for cables calculating)
+./cat info.json (for printing all values in terminal)
+```
+
+# Appendix
 The distance two points is calculated by [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
 
-### Haversine Forumla
+## Haversine Forumla
 ![default trace](./content/hoversineFormula.svg)
 ```
 d                  : distance between the two points
