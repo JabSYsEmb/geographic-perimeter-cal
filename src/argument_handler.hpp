@@ -1,8 +1,8 @@
 #define ALL_COUNTRY "All"
-#define CALC_BORDER "border"
+#define CALC_BORDER "BORDER"
 
 enum c_choice { ALL = 1, SINGLE_COUNTRY }; // all for all countries, Single for a single country
-enum t_choice { BORDER = 1, SENSING_CABLE};
+enum t_choice { BORDER = 1, SENSING_CABLE, UNVALID};
 
 void c_handler(std::string* cflag, char* optarg); // c parameter handler
 void t_handler(std::string* tflag, char* optarg); // t parameter handler
@@ -23,6 +23,7 @@ void c_handler(std::string* cflag, char* optarg)
 void t_handler(std::string* tflag, char* optarg)
 {
     if (optarg) tflag->assign(stringCapitalizer(optarg));
+    else tflag->assign((CALC_BORDER));
 }
 
 c_choice enum_countries_setter(std::string str)
@@ -38,6 +39,8 @@ t_choice enum_calcType_setter(std::string str)
     t_choice choice;
     if(str == "BORDER") choice = BORDER;
     else if(str == "CABLE") choice = SENSING_CABLE;
+    else if(str.size() > 0 && str != "BORDER") choice = UNVALID;
+    else choice = BORDER;
 
     return choice;
 }

@@ -9,8 +9,6 @@
 #include "argument_handler.hpp"
 
 #define FLAGS "c:t:h"
-#define ALL_COUNTRY "All"
-#define CALC_BORDER "border"
 #define COUNTRIES_JSON "countries.geojson"
 #define DATA_DIRECTORY "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/"
 
@@ -99,6 +97,7 @@ namespace parser
 		// TO-DO:
 		// countryNotFoundError func
 		country::Country _country;
+		json countries_data = parser::json_reader(COUNTRIES_JSON);
 		switch (enum_countries_setter(country.iso))
 		{
 			case ALL:
@@ -108,13 +107,19 @@ namespace parser
 						country_json_parser(data);
 						break;
 					case SENSING_CABLE:
+						country_json_parser(countries_data);
 						// setSensingCableLength();
+						break;
+					case UNVALID:
+						notFoundOperationError();
+						break;
+					default:
+						country_json_parser(data);
 						break;
 				}
 				break;
 			case SINGLE_COUNTRY:
 				_country = getCountryById(country, data);
-				json countries_data = parser::json_reader(COUNTRIES_JSON);
 				switch (enum_calcType_setter(country.calcType))
 				{
 					case BORDER:
