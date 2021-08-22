@@ -10,7 +10,7 @@
 
 #define FLAGS "c:t:h"
 #define DATA_DIRECTORY "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/"
-
+#define OUTPUT_FILE "./info.json"
 using nlohmann::json;
 
 namespace parser
@@ -228,8 +228,15 @@ namespace parser
 
 	void toJsonFormat(country::Country* country)
 	{
-		std::ofstream file("output.json");
-		file << country->get_json();
+		std::string path =((std::string) "./") + OUTPUT_FILE;
+		std::ofstream file;
+		file.open(path, std::ios::out  | std::ios::app);
+		if(file.is_open()){
+			file << country->get_json() << std::endl;
+		}else{
+			std::ofstream file(OUTPUT_FILE);
+			file <<	country->get_json() << std::endl;
+		}
 	}
 }
 #endif // PARSER_H
