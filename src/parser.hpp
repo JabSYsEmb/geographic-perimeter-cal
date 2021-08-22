@@ -150,10 +150,10 @@ namespace parser
 		calcBorderLength(country, countries_data);
 	}
 
-	void calcSensingCableLength(country::Country* country)
-	{
+	// void calcSensingCableLength(country::Country* country)
+	// {
 		
-	}
+	// }
 
 	void country_json_parser(json& data)
 	{

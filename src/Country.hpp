@@ -28,7 +28,7 @@ namespace country
 			void setCountry(country::Country _country);
 			void setIsBorderOrCable(std::string _isBorderOrCable);
 			bool is_borderType(void);
-			double* getLength(void);
+			double getLength(void);
 			void toString();
 	};
 
@@ -53,9 +53,9 @@ namespace country
 		return country_json;
 	}
 
-	double* Country::getLength(void)
+	double Country::getLength(void)
 	{
-		return &_length;
+		return _length;
 	}
 	std::string Country::getName(void)
 	{
