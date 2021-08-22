@@ -154,11 +154,6 @@ namespace parser
 		calcBorderLength(country, data);
 	}
 
-	// void setSensingCableLength(country::Country* country, json& data)
-	// {
-	// 	calcSensingCableLength(country, data);	
-	// }
-
 	void setSensingCableLength(country::Country* country, json& data)
 	{
 		foo(country, data);
