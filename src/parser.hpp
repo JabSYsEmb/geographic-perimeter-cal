@@ -36,6 +36,9 @@ namespace parser
 	void setSensingCableLength(country::Country* country, json& data);
 	country::Country getCountryById(const parsedInput& country, json& data); 
 	void bss(const std::string& country_iso, json& data, json& countries_data);
+	void getAllCountriesBorderCalculated(country::Country* _country,json& data,json& countries_data);
+	void getAllCountriesSensingCableCalculated(country::Country* _country,json& data,json& countries_data);
+
 	
 	json json_reader(std::string suffix);
 	parsedInput inputParser(const int& argc, char** arguments);
@@ -104,12 +107,10 @@ namespace parser
 				switch (enum_calcType_setter(country.calcType))
 				{
 					case BORDER:
-						json_printer(getCountry(data).get_json());
+						getAllCountriesBorderCalculated(&_country,data,countries_data);
 						break;
 					case SENSING_CABLE:
-						json_printer(getCountry(data).get_json());
-						// country_json_parser(countries_data);
-						// setSensingCableLength();
+						getAllCountriesSensingCableCalculated(&_country,data,countries_data);
 						break;
 					case UNVALID:
 						notFoundOperationError();
@@ -140,6 +141,7 @@ namespace parser
 		}
 	}
 
+	
 	country::Country getCountryById(const parsedInput& parsedInput, json& data)
 	{
 		country::Country temp;
@@ -162,6 +164,36 @@ namespace parser
 		return temp;
 	}
 
+	void getAllCountriesSensingCableCalculated(country::Country* _country,json& data,json& countries_data)
+	{
+		for (auto& _t : data["features"])
+		{	
+			*_country = country::Country(
+				_t["properties"]["country"], 
+				_t["properties"]["iso3"], 
+				_t["geometry"]["coordinates"][0], 
+				_t["geometry"]["coordinates"][1],
+				"CABLE");
+			setSensingCableLength(_country, countries_data);
+			toJsonFormat(_country);
+		}
+	}
+
+	void getAllCountriesBorderCalculated(country::Country* _country,json& data,json& countries_data)
+	{
+		for (auto& _t : data["features"])
+		{	
+			*_country = country::Country(
+				_t["properties"]["country"], 
+				_t["properties"]["iso3"], 
+				_t["geometry"]["coordinates"][0], 
+				_t["geometry"]["coordinates"][1],
+				"BORDER");
+			setBorderLength(_country, countries_data);
+			toJsonFormat(_country);
+		}
+	}
+
 	void setBorderLength(country::Country* country, json& data)
 	{
 		calcBorderLength(country, data);
@@ -170,7 +202,6 @@ namespace parser
 	void setSensingCableLength(country::Country* country, json& data)
 	{
 		foo(country, data);
-		json_printer(country->get_json());
 	}
 	
 	void country_json_parser(json& data)
