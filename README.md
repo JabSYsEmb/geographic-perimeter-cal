@@ -5,23 +5,21 @@ A Terminal-based application to calculate the distance among points provided by 
 ## Prerequisite
 
 - cmake 3.15 and above
+- [JSON for Modern C++](https://github.com/nlohmann/json)
 - c++17 
 
 ## Compilation of the project
 
-At first, it's needed to change the path in [parser.hpp](https://github.com/JabSYsEmb/Perimeter_calculator/blob/main/src/parser.hpp#L14) to point to the geojsons files and check if names are written correctly.
+At first, it's needed to change the path in [parser.hpp](https://github.com/JabSYsEmb/Perimeter_calculator/blob/main/src/parser.hpp#L12) to point to the json files and check if names are written correctly.
 
-To compile the project, cd into the folder where the project has been downloaded then write the following:
+To compile the project, navigate into the folder where the project has been downloaded then write the following:
 
 ``` bash
 mkdir build && cd build
 cmake ..
 make 
 ```
-The project should be compiled and if you type, you will see as in the screenshot below
-``` bash 
-ls -la 
-```
+The project should be compiled and if you type ``` ls -la ``` you can see something similar to the screenshot below
 ![default trace](./content/screenshot.png)
 
 Now, we need to execute the application in terminal as follwoing:
@@ -46,12 +44,12 @@ $ ./bss -c AZE -t border
    "name": "Azerbaijan"
 }
 ```
-After the application is terminated it will output corresponding info to a json file ```info.json``` in the same directory where it's executed, to print the content of the file out type the following:
+After the application is terminated it will output corresponding data into a json file ```info.json``` in the same directory where it's executed. In order to print the content of the file out type the following:
 ``` bash
 $ cat where/code/executed/info.json
 ```
 
-for calcuating the border length or sensing cable' length of the whole dataset, the following commends should be executed.
+for calcuating  ```border```'s length or sensing ```cable```'s length of the all countries at once, the following commends should be executed.
 ```bash
 ./bss -t border (for borders calculating)
 ./bss -t cable  (for cables calculating)
@@ -59,7 +57,7 @@ for calcuating the border length or sensing cable' length of the whole dataset, 
 ```
 
 # Appendix
-The distance two points is calculated by [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
+The distance among two points in this project is calculated by applying [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
 
 ## Haversine Forumla
 ![default trace](./content/hoversineFormula.svg)
