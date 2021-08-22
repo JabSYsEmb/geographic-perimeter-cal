@@ -28,12 +28,31 @@ Now, we need to execute the application in terminal
 ``` 
 ./bss -c [ISO_A3] -t [border/center]
 ISO_A3         : country of interest {Default: All} [not case-sensitive]
-border/center  : type of calculation {Default: border}
+border/center  : type of calculation {Default: border} [not case-sensitive]
 ```
-Examples:
+
+for instances:
 ```
-For calculate border of Azerbaijan
-./bss -c {AZE or aze} -t border
-For calculate sensing cable length of Azerbaijan
-./bss -c AZE -t cable
+$ ./bss -c AZE -t cable
+{
+    "cable": 797773.9204358519,
+    "iso_a3": "AZE",
+    "name": "Azerbaijan"
+}
+$ ./bss -c AZE -t border
+{
+   "border": 2710587.9890285926,
+   "iso_a3": "AZE",
+   "name": "Azerbaijan"
+}
+```
+The distance two points is calculated by [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
+
+### Haversine Forumla
+![default trace](./content/hoversineFormula.svg)
+```
+d                  : distance between the two points
+r                  : radius of the sphere (of Earth in our case)
+deta(1), deta(2)   : are the latitude of point 1, point 2 (in radians)
+lamda(1), lamda(2) : are the longitude of point 1, point 2 (in radians)
 ```
