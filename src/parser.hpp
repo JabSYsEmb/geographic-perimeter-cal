@@ -34,7 +34,8 @@ namespace parser
 	void notFoundCountryError(bool isCountryFound); 
 	void calcBorderLength(country::Country* country);
 	void bss(const std::string& country_iso, json& data);
-	void calcBorderLength(const std::string& country_iso, json& data); 
+	void setBorderLength(country::Country* country, json& data);
+	void setSensingCableLength(country::Country* country, json& data);
 	country::Country getCountryById(const parsedInput& country, json& data); 
 	
 	json json_reader(std::string suffix);
@@ -107,20 +108,21 @@ namespace parser
 						country_json_parser(data);
 						break;
 					case SENSING_CABLE:
-
+						// setSensingCableLength();
 						break;
 				}
 				break;
 			case SINGLE_COUNTRY:
 				_country = getCountryById(country, data);
+				json countries_data = parser::json_reader(COUNTRIES_JSON);
 				switch (enum_calcType_setter(country.calcType))
 				{
 					case BORDER:
-						calcBorderLength(&_country);
+						setBorderLength(&_country, countries_data);
 						std::cout << _country.get_json().dump(3) << std::endl;
 						break;
 					case SENSING_CABLE:
-
+						setSensingCableLength(&_country, countries_data);
 						break;
 					default:
 						notFoundOperationError();
@@ -144,17 +146,20 @@ namespace parser
 		return temp;
 	}
 
-	void calcBorderLength(country::Country* country)
+	void setBorderLength(country::Country* country, json& data)
 	{
-		json countries_data = parser::json_reader(COUNTRIES_JSON);
-		calcBorderLength(country, countries_data);
+		calcBorderLength(country, data);
 	}
 
-	// void calcSensingCableLength(country::Country* country)
+	// void setSensingCableLength(country::Country* country, json& data)
 	// {
-		
+	// 	calcSensingCableLength(country, data);	
 	// }
 
+	void setSensingCableLength(country::Country* country, json& data)
+	{
+		foo(country, data);
+	}
 	void country_json_parser(json& data)
 	{
 		for (auto& _t : data["features"])

@@ -2,16 +2,28 @@
 
 namespace country
 {
+	struct points{
+		double _lon;
+		double _lat;
+	};
+	typedef struct points coordinate;
+
 	class Country
 	{
 		private:
 			std::string _name{};
 			std::string _iso_a3{};			
-			std::string _calcType{}; 
+			std::string _calcType{};
+			coordinate _coordinate; 
 			double _length{};
 		public:
-			// Country(std::string name, std::string iso_a3,coordinate coordinate, std::string calcType) 
-			// : _name{name}, _iso_a3{iso_a3}, _coordinate{coordinate}, _calcType{calcType} {};
+			Country(std::string name, std::string iso_a3,coordinate pcoordinate, std::string calcType) 
+			{
+				_name = name;
+				_iso_a3 = iso_a3;
+				_calcType = calcType;
+				_coordinate = pcoordinate;
+			}
 
 			Country(std::string name, std::string iso_a3, std::string calcType) 
 			: _name{name}, _iso_a3{iso_a3}, _calcType{calcType} {};
@@ -22,6 +34,7 @@ namespace country
 			std::string getISO(void);
 			std::string getCalcType(void);
 			nlohmann::json get_json(void);
+			coordinate getCoordinate(void);
 			void setLength(double _length);
 			void setName(std::string _name);
 			void setISO(std::string _iso_a3);
@@ -66,7 +79,13 @@ namespace country
 	{
 		return _iso_a3;
 	}
-			
+	
+
+	coordinate Country::getCoordinate(void)
+	{
+		return _coordinate;
+	}
+		
 	std::string Country::getCalcType(void)
 	{
 		return _calcType;
