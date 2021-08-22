@@ -9,7 +9,6 @@
 #include "argument_handler.hpp"
 
 #define FLAGS "c:t:h"
-#define COUNTRIES_JSON "countries.geojson"
 #define DATA_DIRECTORY "/home/jabbar/SammTechnology/Perimeter_calculator/src/data/"
 
 using nlohmann::json;
@@ -32,10 +31,10 @@ namespace parser
 	void toJsonFormat(country::Country* country);
 	void notFoundCountryError(bool isCountryFound); 
 	void calcBorderLength(country::Country* country);
-	void bss(const std::string& country_iso, json& data);
 	void setBorderLength(country::Country* country, json& data);
 	void setSensingCableLength(country::Country* country, json& data);
 	country::Country getCountryById(const parsedInput& country, json& data); 
+	void bss(const std::string& country_iso, json& data, json& countries_data);
 	
 	json json_reader(std::string suffix);
 	parsedInput inputParser(const int& argc, char** arguments);
@@ -93,19 +92,21 @@ namespace parser
 	}
 
 	// border security system _main_
-	void bss(const parsedInput& country, json& data)
+	void bss(const parsedInput& country, json& data, json& countries_data)
 	{
 		// TO-DO:
 		// countryNotFoundError func
 		country::Country _country;
-		json countries_data = parser::json_reader(COUNTRIES_JSON);
 		switch (enum_countries_setter(country.iso))
 		{
 			case ALL:
 				switch (enum_calcType_setter(country.calcType))
 				{
 					case BORDER:
-						country_json_parser(data);
+						// for (auto& country_iso : iso_countries)
+						//{
+							country_json_parser(data /*  country_iso */);
+						//}
 						break;
 					case SENSING_CABLE:
 						country_json_parser(countries_data);
