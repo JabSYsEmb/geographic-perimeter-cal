@@ -2,7 +2,7 @@
 #define _MATH_CODE
 #include <math.h>
 
-#define RADIO_OF_EARTH 6372797.56085
+#define RADIUS_OF_EARTH 6372797.56085
 
 void calcBorderLength(country::Country* country , json& data);
 // void calcSensingCableLength(country::Country* country, json& data);
@@ -107,7 +107,7 @@ double CalcHaversinDistance(double latitud1, double longitud1, double latitud2, 
                 * (pow(sin((longitud2 - longitud1)/2), 2)));
                 
     temp = 2 * asin(std::min(1.0, sqrt(haversine)));
-    distancia_puntos = RADIO_OF_EARTH * temp;
+    distancia_puntos = RADIUS_OF_EARTH * temp;
    return distancia_puntos;
 }
 
