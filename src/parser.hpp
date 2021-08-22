@@ -139,7 +139,10 @@ namespace parser
 		{	
 			if (_t["properties"]["iso3"] == country.iso)
 			{
-				temp = country::Country(_t["properties"]["country"] ,country.iso,country.calcType);
+				temp = country::Country(
+					_t["properties"]["country"], country.iso, _t["geometry"]["coordinates"][0], _t["geometry"]["coordinates"][1],country.calcType
+					);
+
 				return temp;
 			}
 		}
@@ -159,6 +162,7 @@ namespace parser
 	void setSensingCableLength(country::Country* country, json& data)
 	{
 		foo(country, data);
+		json_printer(country->get_json());
 	}
 	void country_json_parser(json& data)
 	{

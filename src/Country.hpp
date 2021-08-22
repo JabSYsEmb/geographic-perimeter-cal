@@ -17,12 +17,13 @@ namespace country
 			coordinate _coordinate; 
 			double _length{};
 		public:
-			Country(std::string name, std::string iso_a3,coordinate pcoordinate, std::string calcType) 
+			Country(std::string name, std::string iso_a3, double lat, double lon, std::string calcType) 
 			{
 				_name = name;
 				_iso_a3 = iso_a3;
 				_calcType = calcType;
-				_coordinate = pcoordinate;
+				_coordinate._lat = lat;
+				_coordinate._lon = lon;
 			}
 
 			Country(std::string name, std::string iso_a3, std::string calcType) 
