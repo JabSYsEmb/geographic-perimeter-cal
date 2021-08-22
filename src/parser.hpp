@@ -29,6 +29,7 @@ namespace parser
 	void json_printer(json temp);
 	void notFoundOperationError();
 	void country_json_parser(json& data);
+	void toJsonFormat(country::Country* country);
 	void notFoundCountryError(bool isCountryFound); 
 	void calcBorderLength(country::Country* country);
 	void bss(const std::string& country_iso, json& data);
@@ -125,9 +126,11 @@ namespace parser
 					case BORDER:
 						setBorderLength(&_country, countries_data);
 						std::cout << _country.get_json().dump(3) << std::endl;
+						toJsonFormat(&_country);
 						break;
 					case SENSING_CABLE:
 						setSensingCableLength(&_country, countries_data);
+						toJsonFormat(&_country);
 						break;
 					default:
 						notFoundOperationError();
@@ -203,6 +206,12 @@ namespace parser
 			  << "bss -c AEZ -t border\n"
 			  << "\t\tbss -c KSA -t center\n"
 			  << std::endl;
+	}
+
+	void toJsonFormat(country::Country* country)
+	{
+		std::ofstream file("output.json");
+		file << country->get_json();
 	}
 }
 #endif // PARSER_H
