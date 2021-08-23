@@ -64,6 +64,6 @@ The distance among two points in this project is calculated by applying [Haversi
 ```
 d                  : distance between the two points
 r                  : radius of the sphere (of Earth in our case)
-deta(1), deta(2)   : are the latitude of point 1, point 2 (in radians)
+Theta(1), Theta(2) : are the latitude of point 1, point 2 (in radians)
 lamda(1), lamda(2) : are the longitude of point 1, point 2 (in radians)
 ```
