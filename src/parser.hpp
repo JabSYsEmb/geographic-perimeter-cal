@@ -203,7 +203,7 @@ namespace parser
 
 	void setSensingCableLength(country::Country* country, json& data)
 	{
-		foo(country, data);
+		calculateSensingCableLength(country, data);
 	}
 	
 	void country_json_parser(json& data)
