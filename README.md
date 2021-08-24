@@ -59,6 +59,8 @@ for calcuating  ```border```'s length or sensing ```cable```'s length of the all
 # Appendix
 The distance among two points in this project is calculated by applying [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) since the Earth isn't flat ```¯\_(ツ)_/¯```. 
 
+![default trace](./content/Lat_Long.gif)
+
 ## Haversine Forumla
 ![default trace](./content/hoversineFormula.svg)
 ```
