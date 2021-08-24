@@ -37,7 +37,7 @@ void calcBorderLength(country::Country* country, json& data)
 }
 
 
-void calculateSensingCableLength(country::Country* country, json& data)
+void foo(country::Country* country, json& data)
 {
     for (auto& _t : data["features"])
     if (_t["properties"]["ISO_A3"] == country->getISO())
