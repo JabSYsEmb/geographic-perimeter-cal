@@ -19,8 +19,6 @@ mkdir build && cd build
 cmake ..
 make 
 ```
-The project should be compiled and if you type ``` ls -la ``` you can see something similar to the screenshot below
-![default trace](./content/screenshot.png)
 
 Now, we need to execute the application in terminal as follwoing:
 ``` 
